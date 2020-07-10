@@ -1,0 +1,12 @@
+flask
+sqlalchemy
+flask-restx
+flask-sqlalchemy
+sqlalchemy_utils
+flask-migrate
+pymysql
+gunicorn
+flask_marshmallow
+marshmallow-sqlalchemy
+sqlalchemy_utils
+cryptography
