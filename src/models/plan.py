@@ -7,32 +7,28 @@ import uuid
 
 ma = Marshmallow()
 
+
 class PlanModel(db.Model):
-  __tablename__ = 'plans'
+    __tablename__ = 'plans'
 
-  id = db.Column(UUIDType(binary=False), primary_key=True, default=uuid.uuid4)
-  name = db.Column(db.String(255), nullable=False)
-  state = db.Column(db.String(255), nullable=False)
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    traveler_id = db.Column(db.Integer, nullable=True)
+    name = db.Column(db.String(255), nullable=True)
+    uuid = db.Column(UUIDType(binary=False), nullable=True, default=uuid.uuid4())
+    insertTime = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    updateTime = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
 
-  createTime = db.Column(db.DateTime, nullable=False, default=datetime.now)
-  updateTime = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
+    def __init__(self, name, traveler_id=0):
+        self.name = name
+        self.traveler_id = traveler_id
 
-  def __init__(self, name, state):
-    self.name = name
-    self.state = state
-
-
-  def __repr__(self):
-    return '<PlanModel {}:{}>'.format(self.id, self.name)
+    def __repr__(self):
+        return '<PlanModel {}:{}>'.format(self.id, self.uuid)
 
 
 class PlanSchema(ma.SQLAlchemySchema):
-  class Meta:
-    model = PlanModel
+    class Meta:
+        model = PlanModel
 
-  id = fields.String()
-  name = fields.String()
-  state = fields.String()
-  createTime = fields.DateTime('%Y-%m-%dT%H:%M:%S')
-  updateTime = fields.DateTime('%Y-%m-%dT%H:%M:%S')
-
+    traveler_id = fields.Integer()
+    name = fields.String()

@@ -1,19 +1,25 @@
-from flask import Flask, jsonify
-from flask_restful import Api
+from flask import Flask
+from flask_restx import Api
+
+from src.apis.plan import plan_namespace
 from src.database import init_db
-from src.apis.plan import PlanListAPI, PlanAPI
+
 
 def create_app():
+    app = Flask(__name__)
+    app.config.from_object('src.config.Config')
 
-  app = Flask(__name__)
-  app.config.from_object('src.config.Config')
+    init_db(app)
 
-  init_db(app)
+    api = Api(
+        title='Matatabi API',
+        version='1.0',
+        description='Matatabi Trip Planning API'
+    )
+    api.init_app(app)
+    api.add_namespace(plan_namespace)
 
-  api = Api(app)
-  api.add_resource(PlanListAPI, '/plans')
-  api.add_resource(PlanAPI, '/plans/<id>')
+    return app
 
-  return app
 
 app = create_app()

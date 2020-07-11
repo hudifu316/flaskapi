@@ -1,62 +1,76 @@
-from flask_restful import Resource, reqparse, abort
-from flask import jsonify
+from flask_restx import Namespace, fields, Resource, reqparse
 from src.models.plan import PlanModel, PlanSchema
 from src.database import db
 
-class PlanListAPI(Resource):
-  def __init__(self):
-    self.reqparse = reqparse.RequestParser()
-    self.reqparse.add_argument('name', required=True)
-    self.reqparse.add_argument('state', required=True)
-    super(PlanListAPI, self).__init__()
-
-  def get(self):
-    results = PlanModel.query.all()
-    jsonData = PlanSchema(many=True).dump(results)
-    return jsonify({'items': jsonData})
-
-  def post(self):
-    args = self.reqparse.parse_args()
-    plan = PlanModel(args.name, args.state)
-    db.session.add(plan)
-    db.session.commit()
-    res = PlanSchema().dump(plan)
-    return res, 201
-
-
-class PlanAPI(Resource):
-  def __init__(self):
-    self.reqparse = reqparse.RequestParser()
-    self.reqparse.add_argument('name')
-    self.reqparse.add_argument('state')
-    super(PlanAPI, self).__init__()
+plan_namespace = Namespace('plan', description='Planのエンドポイント')
+plan = plan_namespace.model('PlanModel', {
+    'id': fields.Integer(
+        required=False,
+        description='旅行プランのID',
+        example=0
+    ),
+    'traveler_id': fields.Integer(
+        required=False,
+        description='旅行プランを作ったユーザのID',
+        example=1
+    ),
+    'name': fields.String(
+        required=False,
+        description='旅行プランのタイトル',
+        example='北北西の旅'
+    ),
+    'uuid': fields.String(
+        required=False,
+        description='リンクシェア用のUUID',
+        example='XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'
+    )
+})
 
 
-  def get(self, id):
-    plan = db.session.query(PlanModel).filter_by(id=id).first()
-    if plan is None:
-      abort(404)
+@plan_namespace.route('/')
+class PlanList(Resource):
+    # PlanModelを利用して結果をパースしてリストで返す
+    @plan_namespace.marshal_list_with(plan)
+    def get(self):
+        """
+        Plan一覧取得
+        """
+        return PlanModel.query.all()
 
-    res = PlanSchema().dump(plan)
-    return res
+    @plan_namespace.marshal_with(plan)
+    @plan_namespace.expect(plan, validate=True)
+    def post(self):
+        """
+        Plan登録
+        """
+        parser = reqparse.RequestParser()
+        parser.add_argument('name', type=str, help='plan name')
+        parser.add_argument('traveler_id', type=int)
+
+        args = parser.parse_args()
+        plan_insert = PlanModel(args.name, args.traveler_id)
+        db.session.add(plan_insert)
+        db.session.commit()
+        res = PlanSchema().dump(plan_insert)
+        return res, 201
 
 
-  def put(self, id):
-    plan = db.session.query(PlanModel).filter_by(id=id).first()
-    if plan is None:
-      abort(404)
-    args = self.reqparse.parse_args()
-    for name, value in args.items():
-      if value is not None:
-        setattr(plan, name, value)
-    db.session.add(plan)
-    db.session.commit()
-    return None, 204
+@plan_namespace.route('/<int:id>')
+class PlanController(Resource):
+    # PlanModelモデルを利用して結果をパースして単体で返す
+    @plan_namespace.marshal_with(plan)
+    def get(self, id):
+        """
+        Plan詳細
+        """
+        # ただし1個も見つからなかったら404を返す
+        return PlanModel.query.filter(id == id).first_or_404()
 
-
-  def delete(self, id):
-    plan = db.session.query(PlanModel).filter_by(id=id).first()
-    if plan is not None:
-      db.session.delete(plan)
-      db.session.commit()
-    return None, 204
+    def delete(self, id):
+        """
+        Plan削除
+        """
+        # 見つからなかったときの処理してないけど許して
+        target_plan = PlanModel.query.filter(id == id).first()
+        db.session.delete(target_plan)
+        return {'message': 'Success'}, 200

@@ -20,15 +20,3 @@ services:
       - ./mysql/sqls:/docker-entrypoint-initdb.d
     environment:
       - MYSQL_ROOT_PASSWORD=hogehoge
-  swagger-editor:
-    image: swaggerapi/swagger-editor
-    ports:
-      - "8001:8080"
-  swagger-ui:
-    image: swaggerapi/swagger-ui
-    ports:
-      - "8002:8080"
-    volumes:
-      - ./src/apis/openapi.yaml:/openapi.yaml
-    environment:
-      SWAGGER_JSON: /openapi.yaml
