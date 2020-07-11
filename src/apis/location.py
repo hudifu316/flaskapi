@@ -66,13 +66,14 @@ class LocationController(Resource):
         Location詳細
         """
         # ただし1個も見つからなかったら404を返す
-        return LocationModel.query.filter(id == id).first_or_404()
+        return LocationModel.query.filter(LocationModel.id == id).first_or_404()
 
     def delete(self, id):
         """
         Location削除
         """
         # 見つからなかったときの処理してないけど許して
-        target_location = LocationModel.query.filter(id == id).first()
+        target_location = LocationModel.query.filter(LocationModel.id == id).first()
         db.session.delete(target_location)
+        db.session.commit()
         return {'message': 'Success'}, 200

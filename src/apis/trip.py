@@ -90,13 +90,14 @@ class TripController(Resource):
         Trip詳細
         """
         # ただし1個も見つからなかったら404を返す
-        return TripModel.query.filter(id == id).first_or_404()
+        return TripModel.query.filter(TripModel.id == id).first_or_404()
 
     def delete(self, id):
         """
         Trip削除
         """
         # 見つからなかったときの処理してないけど許して
-        target_trip = TripModel.query.filter(id == id).first()
+        target_trip = TripModel.query.filter(TripModel.id == id).first()
         db.session.delete(target_trip)
+        db.session.commit()
         return {'message': 'Success'}, 200

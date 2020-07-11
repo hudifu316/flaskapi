@@ -65,13 +65,14 @@ class PlanController(Resource):
         Plan詳細
         """
         # ただし1個も見つからなかったら404を返す
-        return PlanModel.query.filter(id == id).first_or_404()
+        return PlanModel.query.filter(PlanModel.id == id).first_or_404()
 
     def delete(self, id):
         """
         Plan削除
         """
         # 見つからなかったときの処理してないけど許して
-        target_plan = PlanModel.query.filter(id == id).first()
+        target_plan = PlanModel.query.filter(PlanModel.id == id).first()
         db.session.delete(target_plan)
+        db.session.commit()
         return {'message': 'Success'}, 200
