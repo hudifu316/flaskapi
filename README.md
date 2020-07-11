@@ -27,4 +27,4 @@
   
 # ドキュメンテーション
 
-[ER図](doc/ERDiagram.drawio)
+[ER図](https://app.diagrams.net/?title=ERDiagram.drawio#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fhudifu316%2Fflaskapi%2Fmaster%2Fdoc%2FERDiagram.drawio)
