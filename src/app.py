@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restx import Api
 
+from src.apis.location import location_namespace
 from src.apis.plan import plan_namespace
 from src.apis.trip import trip_namespace
 from src.database import init_db
@@ -20,6 +21,7 @@ def create_app():
     api.init_app(app)
     api.add_namespace(plan_namespace)
     api.add_namespace(trip_namespace)
+    api.add_namespace(location_namespace)
 
     return app
 
