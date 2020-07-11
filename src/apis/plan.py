@@ -2,7 +2,7 @@ from flask_restx import Namespace, fields, Resource, reqparse
 from src.models.plan import PlanModel, PlanSchema
 from src.database import db
 
-plan_namespace = Namespace('plan', description='Planのエンドポイント')
+plan_namespace = Namespace('plans', description='Planのエンドポイント')
 plan = plan_namespace.model('PlanModel', {
     'id': fields.Integer(
         required=False,

@@ -2,7 +2,7 @@ from flask_restx import Namespace, fields, Resource, reqparse, inputs
 from src.models.location import LocationModel, LocationSchema
 from src.database import db
 
-location_namespace = Namespace('location', description='Locationのエンドポイント')
+location_namespace = Namespace('locations', description='Locationのエンドポイント')
 location = location_namespace.model('LocationModel', {
     'id': fields.Integer(
         required=False,

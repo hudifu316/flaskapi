@@ -2,7 +2,7 @@ from flask_restx import Namespace, fields, Resource, reqparse, inputs
 from src.models.trip import TripModel, TripSchema
 from src.database import db
 
-trip_namespace = Namespace('trip', description='Tripのエンドポイント')
+trip_namespace = Namespace('trips', description='Tripのエンドポイント')
 trip = trip_namespace.model('TripModel', {
     'id': fields.Integer(
         required=False,
