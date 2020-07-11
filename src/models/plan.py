@@ -18,12 +18,12 @@ class PlanModel(db.Model):
     insertTime = db.Column(db.DateTime, nullable=False, default=datetime.now)
     updateTime = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
 
-    def __init__(self, name, traveler_id=0):
+    def __init__(self, name, traveler_id):
         self.name = name
         self.traveler_id = traveler_id
 
     def __repr__(self):
-        return '<PlanModel {}:{}>'.format(self.id, self.uuid)
+        return '<PlanModel {}:{}>'.format(self.id, self.name)
 
 
 class PlanSchema(ma.SQLAlchemySchema):

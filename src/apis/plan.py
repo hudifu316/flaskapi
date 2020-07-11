@@ -56,6 +56,7 @@ class PlanList(Resource):
 
 
 @plan_namespace.route('/<int:id>')
+@plan_namespace.doc(params={'id': 'id of plan'})
 class PlanController(Resource):
     # PlanModelモデルを利用して結果をパースして単体で返す
     @plan_namespace.marshal_with(plan)
