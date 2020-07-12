@@ -17,6 +17,7 @@
   ```
   % docker-compose up -d
   ```
+
   Creating network "matatabi_default" with the default driver<BR>
   Creating matatabi_db_1  ... done<BR>
   Creating matatabi_api_1 ... done
@@ -57,6 +58,11 @@
    | trips              |
     --------------------
     6 rows in set (0.00 sec)
+
+- サンプルレコードをインサートする
+  ```
+  % docker-compose exec db mysql -u root -p matatabi < mysql/sqls/dumpfile
+  ```
 
 - 各APIが正しく応答するか確認する
   ```

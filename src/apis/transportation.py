@@ -37,6 +37,11 @@ class TransportationList(Resource):
     def post(self):
         """
         Transportation登録
+        ## 入力値
+        - transportation : 交通手段（varchar255）
+        - image_url : 参考画像URL（varchar255）
+        ## 注意事項
+        idは登録時に自動採番されるため不要
         """
         parser = reqparse.RequestParser()
         parser.add_argument('transportation', type=str)

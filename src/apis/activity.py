@@ -47,6 +47,14 @@ class ActivityList(Resource):
     def post(self):
         """
         Activity登録
+        ## 入力値
+        - plan_id(FK)
+        - activity : アクティビティの名称(varchar255)
+        - image_url : 参考画像URL（varchar255）
+        - order : 旅行プランの中での並び順
+        ## 注意事項
+        idは登録時に自動採番されるため不要
+        FK表記のあるパラメタはFK制約のため、関連テーブルにレコードが存在しないとエラーとなる
         """
         parser = reqparse.RequestParser()
         parser.add_argument('plan_id', type=int)

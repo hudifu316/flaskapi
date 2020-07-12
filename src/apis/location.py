@@ -42,6 +42,12 @@ class LocationList(Resource):
     def post(self):
         """
         Location登録
+        ## 入力値
+        - location : 場所名（varchar255）
+        - address : 住所・所在地（varchar255）
+        - image_url : 参考画像URL（varchar255）
+        ## 注意事項
+        idは登録時に自動採番されるため不要
         """
         parser = reqparse.RequestParser()
         parser.add_argument('location', type=str)

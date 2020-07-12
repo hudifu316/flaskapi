@@ -1,0 +1,87 @@
+-- MySQL dump 10.13  Distrib 8.0.20, for Linux (x86_64)
+--
+-- Host: localhost    Database: matatabi
+-- ------------------------------------------------------
+-- Server version	8.0.20
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Dumping data for table `activities`
+--
+
+LOCK TABLES `activities` WRITE;
+/*!40000 ALTER TABLE `activities` DISABLE KEYS */;
+INSERT INTO `activities` VALUES (1,1,'ねこと遊ぶ','https://pbs.twimg.com/media/Ecm58xSUwAEXDYq?format=jpg',20,'2020-07-12 13:29:33','2020-07-12 13:29:33');
+/*!40000 ALTER TABLE `activities` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `alembic_version`
+--
+
+LOCK TABLES `alembic_version` WRITE;
+/*!40000 ALTER TABLE `alembic_version` DISABLE KEYS */;
+INSERT INTO `alembic_version` VALUES ('6cd2c0d4c2ae');
+/*!40000 ALTER TABLE `alembic_version` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `locations`
+--
+
+LOCK TABLES `locations` WRITE;
+/*!40000 ALTER TABLE `locations` DISABLE KEYS */;
+INSERT INTO `locations` VALUES (1,'大都会','岡山市北区大供一丁目1番1号','https://www.city.okayama.jp/design_img/head_id.png','2020-07-11 18:20:23','2020-07-11 18:20:23'),(2,'大崎','東京都品川区大崎一丁目21-4','https://upload.wikimedia.org/wikipedia/commons/1/1b/Yamanotesen_Oosaki_eki_3.jpg','2020-07-12 15:35:36','2020-07-12 15:35:36'),(3,'大森海岸','東京都品川区南大井３丁目３２','https://upload.wikimedia.org/wikipedia/commons/9/9f/Omorikaigan-station_gate.jpg','2020-07-12 15:36:32','2020-07-12 15:36:32');
+/*!40000 ALTER TABLE `locations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `plans`
+--
+
+LOCK TABLES `plans` WRITE;
+/*!40000 ALTER TABLE `plans` DISABLE KEYS */;
+INSERT INTO `plans` VALUES (1,1,'またたびの旅','b18524fbdff64d55a01a0a45bb89e0ac','2020-07-11 12:31:25','2020-07-11 12:31:25'),(2,1,'東北の旅','d87ae9b1415c48f294fb13be5281f428','2020-07-11 12:51:11','2020-07-11 12:51:11'),(4,1,'東の旅','6b6e740b370240a7bd1932c3cb605801','2020-07-12 12:41:23','2020-07-12 12:41:23');
+/*!40000 ALTER TABLE `plans` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `transportation`
+--
+
+LOCK TABLES `transportation` WRITE;
+/*!40000 ALTER TABLE `transportation` DISABLE KEYS */;
+INSERT INTO `transportation` VALUES (1,'新幹線なごみ','https://upload.wikimedia.org/wikipedia/commons/5/5a/JRshikoku_tetsudo_hobby_train_kiha32_3.jpg','2020-07-12 15:47:33','2020-07-12 15:47:33'),(2,'テクシー','https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Walking_Man.JPG/400px-Walking_Man.JPG','2020-07-12 15:48:43','2020-07-12 15:48:43');
+/*!40000 ALTER TABLE `transportation` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `trips`
+--
+
+LOCK TABLES `trips` WRITE;
+/*!40000 ALTER TABLE `trips` DISABLE KEYS */;
+INSERT INTO `trips` VALUES (1,1,1,2,0,'2020-07-07 12:00:00','2020-07-07 12:10:10','2020-07-11 18:06:24','2020-07-11 18:06:24',1),(2,1,2,3,20,'2020-07-07 12:10:00','2020-07-07 12:20:00','2020-07-12 12:02:17','2020-07-12 12:02:17',2);
+/*!40000 ALTER TABLE `trips` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2020-07-12  6:58:07

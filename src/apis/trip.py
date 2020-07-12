@@ -1,4 +1,7 @@
 from flask_restx import Namespace, fields, Resource, reqparse, inputs
+
+from src.apis.location import location
+from src.apis.transportation import transportation
 from src.models.trip import TripModel, TripSchema
 from src.database import db
 
@@ -14,16 +17,8 @@ trip = trip_namespace.model('TripModel', {
         description='旅行プランのID（FK）',
         example=1
     ),
-    'departure_location_id': fields.Integer(
-        required=False,
-        description='出発地ID',
-        example=2
-    ),
-    'destination_location_id': fields.Integer(
-        required=False,
-        description='到着地ID',
-        example=3
-    ),
+    'departure_location': fields.Nested(location),
+    'destination_location': fields.Nested(location),
     'order': fields.Integer(
         required=False,
         description='旅行プランの中での並び順',
@@ -39,11 +34,7 @@ trip = trip_namespace.model('TripModel', {
         description='到着時刻',
         example='2099-12-31T23:59:59+09:00'
     ),
-    'transportation_id': fields.Integer(
-        required=False,
-        description='交通手段ID',
-        example=0
-    )
+    'transportation': fields.Nested(transportation)
 })
 
 
@@ -54,6 +45,8 @@ class TripList(Resource):
     def get(self):
         """
         Trip一覧取得
+        - すべての行程の一覧情報を返す
+        - 行程情報には出発地、到着地、交通手段がネスト構造で返却される
         """
         return TripModel.query.all()
 
@@ -62,6 +55,17 @@ class TripList(Resource):
     def post(self):
         """
         Trip登録
+        ## 入力値
+        - plan_id（FK）
+        - departure_location_id（FK）
+        - destination_location_id（FK）
+        - order : 旅行プランの中での並び順
+        - departure_date
+        - arrival_date
+        - transportation_id（FK）
+        ## 注意事項
+        idは登録時に自動採番されるため不要
+        FK表記のあるパラメタはFK制約のため、関連テーブルにレコードが存在しないとエラーとなる
         """
         parser = reqparse.RequestParser()
         parser.add_argument('plan_id', type=int, help='FK')
@@ -94,7 +98,9 @@ class TripController(Resource):
     @trip_namespace.marshal_with(trip)
     def get(self, id):
         """
-        Trip詳細
+        Trip詳細取得
+        - {int:id}で指定された行程の情報を返す
+        - 行程情報には出発地、到着地、交通手段がネスト構造で返却される
         """
         # ただし1個も見つからなかったら404を返す
         return TripModel.query.filter(TripModel.id == id).first_or_404()
@@ -102,6 +108,8 @@ class TripController(Resource):
     def delete(self, id):
         """
         Trip削除
+        - {int:id}で指定された行程を削除する
+        - FK制約の影響は未確認
         """
         # 見つからなかったときの処理してないけど許して
         target_trip = TripModel.query.filter(TripModel.id == id).first()
