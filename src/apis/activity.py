@@ -2,7 +2,7 @@ from flask_restx import Namespace, fields, Resource, reqparse
 from src.models.activity import ActivityModel, ActivitySchema
 from src.database import db
 
-activity_namespace = Namespace('activities', description='Activityのエンドポイント')
+activity_namespace = Namespace('activities', description='旅行プランの中でアクティビティを表す')
 activity = activity_namespace.model('ActivityModel', {
     'id': fields.Integer(
         required=False,
@@ -11,8 +11,8 @@ activity = activity_namespace.model('ActivityModel', {
     ),
     'plan_id': fields.Integer(
         required=False,
-        description='関連付けるPlan_id（FK）',
-        example=0
+        description='旅行プランのID（FK）',
+        example=1
     ),
     'activity': fields.String(
         required=False,
@@ -26,7 +26,7 @@ activity = activity_namespace.model('ActivityModel', {
     ),
     'order': fields.Integer(
         required=False,
-        description='アクティビティの順序（Tripと同じ順番）',
+        description='旅行プランの中での並び順',
         example=20
     )
 })

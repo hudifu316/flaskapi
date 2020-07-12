@@ -1,8 +1,12 @@
 from flask_restx import Namespace, fields, Resource, reqparse
+
+from src.apis.activity import activity
+from src.apis.trip import trip
 from src.models.plan import PlanModel, PlanSchema
 from src.database import db
 
-plan_namespace = Namespace('plans', description='Planのエンドポイント')
+
+plan_namespace = Namespace('plans', description='一つの旅行全体のプランを表す')
 plan = plan_namespace.model('PlanModel', {
     'id': fields.Integer(
         required=False,
@@ -23,7 +27,9 @@ plan = plan_namespace.model('PlanModel', {
         required=False,
         description='リンクシェア用のUUID',
         example='XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'
-    )
+    ),
+    'trips': fields.List(fields.Nested(trip)),
+    'activities': fields.List(fields.Nested(activity))
 })
 
 
@@ -34,6 +40,8 @@ class PlanList(Resource):
     def get(self):
         """
         Plan一覧取得
+        - すべての旅行プランの一覧情報を返す
+        - 旅行プランには各行程とアクティビティがネスト構造で返却される
         """
         return PlanModel.query.all()
 
@@ -42,6 +50,9 @@ class PlanList(Resource):
     def post(self):
         """
         Plan登録
+        - 旅行プランの登録はプラン名と登録ユーザIDのみをPostする
+        - プランIDとUUIDは自動採番されるため不要
+        - 行程とアクティビティの一覧は登録時は無視される
         """
         parser = reqparse.RequestParser()
         parser.add_argument('name', type=str, help='plan name')
@@ -62,7 +73,8 @@ class PlanController(Resource):
     @plan_namespace.marshal_with(plan)
     def get(self, id):
         """
-        Plan詳細
+        Plan詳細詳細取得
+        - {int:id}で指定された旅行プランの情報を返却する
         """
         # ただし1個も見つからなかったら404を返す
         return PlanModel.query.filter(PlanModel.id == id).first_or_404()
@@ -70,6 +82,7 @@ class PlanController(Resource):
     def delete(self, id):
         """
         Plan削除
+        - {int:id}で指定された旅行プランを削除する
         """
         # 見つからなかったときの処理してないけど許して
         target_plan = PlanModel.query.filter(PlanModel.id == id).first()

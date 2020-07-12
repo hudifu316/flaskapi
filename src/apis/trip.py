@@ -2,16 +2,16 @@ from flask_restx import Namespace, fields, Resource, reqparse, inputs
 from src.models.trip import TripModel, TripSchema
 from src.database import db
 
-trip_namespace = Namespace('trips', description='Tripのエンドポイント')
+trip_namespace = Namespace('trips', description='旅行プランの中で行程を表す')
 trip = trip_namespace.model('TripModel', {
     'id': fields.Integer(
         required=False,
-        description='旅行のID',
+        description='行程のID',
         example=0
     ),
     'plan_id': fields.Integer(
         required=False,
-        description='旅行が含まれる旅行プランのID（FK）',
+        description='旅行プランのID（FK）',
         example=1
     ),
     'departure_location_id': fields.Integer(
@@ -26,7 +26,7 @@ trip = trip_namespace.model('TripModel', {
     ),
     'order': fields.Integer(
         required=False,
-        description='旅行プランの中の並び順',
+        description='旅行プランの中での並び順',
         example=10
     ),
     'departure_date': fields.DateTime(
@@ -38,6 +38,11 @@ trip = trip_namespace.model('TripModel', {
         required=False,
         description='到着時刻',
         example='2099-12-31T23:59:59+09:00'
+    ),
+    'transportation_id': fields.Integer(
+        required=False,
+        description='交通手段ID',
+        example=0
     )
 })
 
@@ -65,6 +70,7 @@ class TripList(Resource):
         parser.add_argument('order', type=int)
         parser.add_argument('departure_date', type=inputs.datetime_from_iso8601)
         parser.add_argument('arrival_date', type=inputs.datetime_from_iso8601)
+        parser.add_argument('transportation_id', type=int)
 
         args = parser.parse_args()
         trip_insert = TripModel(
@@ -73,7 +79,8 @@ class TripList(Resource):
             args.destination_location_id,
             args.order,
             args.departure_date,
-            args.arrival_date)
+            args.arrival_date,
+            args.transportation_id)
         db.session.add(trip_insert)
         db.session.commit()
         res = TripSchema().dump(trip_insert)

@@ -13,7 +13,9 @@ class TripModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    plan_id = db.Column(db.Integer, nullable=True)
+    plan_id = db.Column(db.Integer, db.ForeignKey('plans.id'), nullable=True)
+    plan = db.relationship('PlanModel')
+
     departure_location_id = db.Column(db.Integer, nullable=True)
     destination_location_id = db.Column(db.Integer, nullable=True)
     order = db.Column(db.Integer, nullable=True)
@@ -41,7 +43,6 @@ class TripSchema(ma.SQLAlchemySchema):
     class Meta:
         model = TripModel
 
-    plan_id = fields.Integer()
     departure_location_id = fields.Integer()
     destination_location_id = fields.Integer()
     order = fields.Integer()

@@ -13,7 +13,9 @@ class ActivityModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    plan_id = db.Column(db.Integer, nullable=True)
+    plan_id = db.Column(db.Integer, db.ForeignKey('plans.id'), nullable=True)
+    plan = db.relationship('PlanModel')
+
     activity = db.Column(db.String(255), nullable=True)
     image_url = db.Column(db.String(255), nullable=True)
     order = db.Column(db.Integer, nullable=True)
@@ -35,7 +37,6 @@ class ActivitySchema(ma.SQLAlchemySchema):
     class Meta:
         model = ActivityModel
 
-    plan_id = fields.Integer()
     activity = fields.String()
     image_url = fields.String()
     order = fields.Integer()
