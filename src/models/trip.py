@@ -1,13 +1,10 @@
 from datetime import datetime
-
-from flask_marshmallow import Marshmallow
 from flask_marshmallow.fields import fields
 
 from src.database import db
+from src.models import ma
 from src.models.location import LocationSchema
 from src.models.transportation import TransportationSchema
-
-ma = Marshmallow()
 
 
 class TripModel(db.Model):
@@ -16,7 +13,7 @@ class TripModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     plan_id = db.Column(db.Integer, db.ForeignKey('plans.id'), nullable=True)
-    plan = db.relationship('PlanModel')
+    plan = db.relationship('PlanModel', back_populates="trips")
 
     departure_location_id = db.Column(db.Integer, db.ForeignKey('locations.id'), nullable=True)
     departure_location = db.relationship('LocationModel', foreign_keys=[departure_location_id], uselist=False)
@@ -34,15 +31,6 @@ class TripModel(db.Model):
     insertTime = db.Column(db.DateTime, nullable=False, default=datetime.now)
     updateTime = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
 
-    def __init__(self, plan_id, departure_location_id, destination_location_id, order, departure_date, arrival_date, transportation_id):
-        self.plan_id = plan_id
-        self.departure_location_id = departure_location_id
-        self.destination_location_id = destination_location_id
-        self.order = order
-        self.departure_date = departure_date
-        self.arrival_date = arrival_date
-        self.transportation_id = transportation_id
-
     def __repr__(self):
         return '<TripModel {}>'.format(self.id)
 
@@ -50,7 +38,11 @@ class TripModel(db.Model):
 class TripSchema(ma.SQLAlchemySchema):
     class Meta:
         model = TripModel
+        load_instance = True
+        sqla_session = db.session
 
+    id = fields.Integer()
+    plan_id = fields.Integer()
     departure_location = fields.Nested(LocationSchema)
     destination_location = fields.Nested(LocationSchema)
     order = fields.Integer()

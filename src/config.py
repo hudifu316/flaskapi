@@ -6,7 +6,7 @@ class DevelopmentConfig:
     DEBUG = True
 
     # SQLAlchemy
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://{user}:{password}@{host}/{database}?charset=utf8'.format(
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://{user}:{password}@{host}/{database}?charset=UTF8MB4'.format(
         **{
             'user': os.getenv('DB_USER', 'root'),
             'password': os.getenv('DB_PASSWORD', 'hogehoge'),
@@ -18,7 +18,8 @@ class DevelopmentConfig:
     # Swaggerのデフォルト表示形式をListにする
     SWAGGER_UI_DOC_EXPANSION = 'list'
     # Validationの有効化
-    RESTPLUS_VALIDATE = True
+    RESTX_VALIDATE = True
+    ERROR_404_HELP = ""
 
 
 Config = DevelopmentConfig

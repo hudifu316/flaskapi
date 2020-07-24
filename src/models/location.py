@@ -1,11 +1,8 @@
 from datetime import datetime
-
-from flask_marshmallow import Marshmallow
 from flask_marshmallow.fields import fields
 
 from src.database import db
-
-ma = Marshmallow()
+from src.models import ma
 
 
 class LocationModel(db.Model):
@@ -20,11 +17,6 @@ class LocationModel(db.Model):
     insertTime = db.Column(db.DateTime, nullable=False, default=datetime.now)
     updateTime = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
 
-    def __init__(self, location, address, image_url):
-        self.location = location
-        self.address = address
-        self.image_url = image_url
-
     def __repr__(self):
         return '<LocationModel {}:{}>'.format(self.id, self.location)
 
@@ -32,7 +24,10 @@ class LocationModel(db.Model):
 class LocationSchema(ma.SQLAlchemySchema):
     class Meta:
         model = LocationModel
+        load_instance = True
+        sqla_session = db.session
 
+    id = fields.Integer()
     location = fields.String()
     address = fields.String()
     image_url = fields.String()
