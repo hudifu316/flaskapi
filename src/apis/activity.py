@@ -5,12 +5,13 @@ from src.database import db
 activity_namespace = Namespace('activities', description='旅行プランの中でアクティビティを表す')
 activity = activity_namespace.model('ActivityModel', {
     'id': fields.Integer(
+        readonly=True,
         required=False,
         description='アクティビティのID',
         example=0
     ),
     'plan_id': fields.Integer(
-        required=False,
+        required=True,
         description='旅行プランのID（FK）',
         example=1
     ),
@@ -35,7 +36,7 @@ activity = activity_namespace.model('ActivityModel', {
 @activity_namespace.route('/')
 class ActivityList(Resource):
     # ActivityModelを利用して結果をパースしてリストで返す
-    @activity_namespace.marshal_list_with(activity)
+    @activity_namespace.marshal_list_with(activity, envelope='activities')
     def get(self):
         """
         Activity一覧取得
@@ -43,7 +44,7 @@ class ActivityList(Resource):
         return ActivityModel.query.all()
 
     @activity_namespace.marshal_with(activity)
-    @activity_namespace.expect(activity, validate=True)
+    @activity_namespace.expect(activity)
     def post(self):
         """
         Activity登録

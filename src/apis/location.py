@@ -5,6 +5,7 @@ from src.database import db
 location_namespace = Namespace('locations', description='Locationのエンドポイント')
 location = location_namespace.model('LocationModel', {
     'id': fields.Integer(
+        readonly=True,
         required=False,
         description='場所のID',
         example=0
@@ -30,7 +31,7 @@ location = location_namespace.model('LocationModel', {
 @location_namespace.route('/')
 class LocationList(Resource):
     # LocationModelを利用して結果をパースしてリストで返す
-    @location_namespace.marshal_list_with(location)
+    @location_namespace.marshal_list_with(location, envelope='locations')
     def get(self):
         """
         Location一覧取得
@@ -38,7 +39,7 @@ class LocationList(Resource):
         return LocationModel.query.all()
 
     @location_namespace.marshal_with(location)
-    @location_namespace.expect(location, validate=True)
+    @location_namespace.expect(location)
     def post(self):
         """
         Location登録

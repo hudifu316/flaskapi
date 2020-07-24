@@ -13,6 +13,7 @@ from src.database import db
 plan_namespace = Namespace('plans', description='一つの旅行全体のプランを表す')
 plan = plan_namespace.model('PlanModel', {
     'id': fields.Integer(
+        readonly=True,
         required=False,
         description='旅行プランのID',
         example=0
@@ -28,6 +29,7 @@ plan = plan_namespace.model('PlanModel', {
         example='北北西の旅'
     ),
     'uuid': fields.String(
+        readonly=True,
         required=False,
         description='リンクシェア用のUUID',
         example='XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'
@@ -40,7 +42,7 @@ plan = plan_namespace.model('PlanModel', {
 @plan_namespace.route('/')
 class PlanList(Resource):
     # PlanModelを利用して結果をパースしてリストで返す
-    @plan_namespace.marshal_list_with(plan)
+    @plan_namespace.marshal_list_with(plan, envelope='plans')
     def get(self):
         """
         Plan一覧取得
@@ -49,7 +51,7 @@ class PlanList(Resource):
         """
         return PlanModel.query.all()
 
-    @plan_namespace.marshal_with(plan)
+    @plan_namespace.marshal_with(plan, code=201)
     @plan_namespace.expect(plan, validate=True)
     def post(self):
         """
@@ -66,6 +68,10 @@ class PlanList(Resource):
 
         plan_insert = schema.load(req)
         pprint(plan_insert)
+        if plan_insert.id is not None:
+            return abort(400, "Already exist ID. Failed to INSERT")
+        elif plan_insert.uuid is not None:
+            return abort(400, "Already exist UUID. Failed to INSERT")
 
         db.session.add(plan_insert)
         db.session.commit()
@@ -100,8 +106,8 @@ class PlanController(Resource):
         db.session.commit()
         return {'message': 'Delete Success'}, 200
 
-    @plan_namespace.marshal_with(plan)
-    @plan_namespace.expect(plan, validate=True)
+    @plan_namespace.marshal_with(plan, code=201)
+    @plan_namespace.expect(plan)
     def put(self, plan_id):
         """
         Plan変更
@@ -112,7 +118,6 @@ class PlanController(Resource):
         req = json.loads(request.data)
         schema = PlanSchema()
 
-        # target_plan = PlanModel.query.get(id)
         update_plan = schema.load(req, instance=PlanModel.query.get(plan_id))
         if update_plan is None:
             return abort(404)

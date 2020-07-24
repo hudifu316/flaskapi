@@ -20,6 +20,7 @@ class DevelopmentConfig:
     # Validationの有効化
     RESTX_VALIDATE = True
     ERROR_404_HELP = ""
+    RESTX_MASK_HEADER = False
 
 
 Config = DevelopmentConfig

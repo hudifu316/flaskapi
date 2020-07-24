@@ -5,6 +5,7 @@ from src.database import db
 transportation_namespace = Namespace('transportation', description='Transportationのエンドポイント')
 transportation = transportation_namespace.model('TransportationModel', {
     'id': fields.Integer(
+        readonly=True,
         required=False,
         description='交通手段のID',
         example=0
@@ -25,7 +26,7 @@ transportation = transportation_namespace.model('TransportationModel', {
 @transportation_namespace.route('/')
 class TransportationList(Resource):
     # TransportationModelを利用して結果をパースしてリストで返す
-    @transportation_namespace.marshal_list_with(transportation)
+    @transportation_namespace.marshal_list_with(transportation, envelope='transportation')
     def get(self):
         """
         Transportation一覧取得
@@ -33,7 +34,7 @@ class TransportationList(Resource):
         return TransportationModel.query.all()
 
     @transportation_namespace.marshal_with(transportation)
-    @transportation_namespace.expect(transportation, validate=True)
+    @transportation_namespace.expect(transportation)
     def post(self):
         """
         Transportation登録
