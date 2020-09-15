@@ -1,0 +1,622 @@
+swagger: '2.0'
+basePath: /
+paths:
+  /activities/:
+    get:
+      responses:
+        '200':
+          description: Success
+          schema:
+            properties:
+              activities:
+                type: array
+                items:
+                  $ref: '#/definitions/ActivityModel'
+      summary: Activity一覧取得
+      operationId: get_activity_list
+      parameters:
+        - name: "false"
+          in: header
+          type: string
+          format: mask
+          description: An optional fields mask
+      tags:
+        - activities
+    post:
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/ActivityModel'
+      summary: Activity登録
+      description: |-
+        ## 入力値
+        - plan_id(FK)
+        - activity : アクティビティの名称(varchar255)
+        - image_url : 参考画像URL（varchar255）
+        - order : 旅行プランの中での並び順
+        ## 注意事項
+        idは登録時に自動採番されるため不要
+        FK表記のあるパラメタはFK制約のため、関連テーブルにレコードが存在しないとエラーとなる
+      operationId: post_activity_list
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/ActivityModel'
+        - name: "false"
+          in: header
+          type: string
+          format: mask
+          description: An optional fields mask
+      tags:
+        - activities
+  '/activities/{id}':
+    parameters:
+      - description: id of activity
+        name: id
+        in: path
+        required: true
+        type: integer
+    get:
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/ActivityModel'
+      summary: Activity詳細
+      operationId: get_activity_controller
+      parameters:
+        - name: "false"
+          in: header
+          type: string
+          format: mask
+          description: An optional fields mask
+      tags:
+        - activities
+    delete:
+      responses:
+        '200':
+          description: Success
+      summary: Activity削除
+      operationId: delete_activity_controller
+      tags:
+        - activities
+  /locations/:
+    get:
+      responses:
+        '200':
+          description: Success
+          schema:
+            properties:
+              locations:
+                type: array
+                items:
+                  $ref: '#/definitions/LocationModel'
+      summary: Location一覧取得
+      operationId: get_location_list
+      parameters:
+        - name: "false"
+          in: header
+          type: string
+          format: mask
+          description: An optional fields mask
+      tags:
+        - locations
+    post:
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/LocationModel'
+      summary: Location登録
+      description: |-
+        ## 入力値
+        - location : 場所名（varchar255）
+        - address : 住所・所在地（varchar255）
+        - image_url : 参考画像URL（varchar255）
+        ## 注意事項
+        idは登録時に自動採番されるため不要
+      operationId: post_location_list
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/LocationModel'
+        - name: "false"
+          in: header
+          type: string
+          format: mask
+          description: An optional fields mask
+      tags:
+        - locations
+  '/locations/{id}':
+    parameters:
+      - description: id of location
+        name: id
+        in: path
+        required: true
+        type: integer
+    get:
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/LocationModel'
+      summary: Location詳細
+      operationId: get_location_controller
+      parameters:
+        - name: "false"
+          in: header
+          type: string
+          format: mask
+          description: An optional fields mask
+      tags:
+        - locations
+    delete:
+      responses:
+        '200':
+          description: Success
+      summary: Location削除
+      operationId: delete_location_controller
+      tags:
+        - locations
+  /plans/:
+    get:
+      responses:
+        '200':
+          description: Success
+          schema:
+            properties:
+              plans:
+                type: array
+                items:
+                  $ref: '#/definitions/PlanModel'
+      summary: Plan一覧取得
+      description: |-
+        - すべての旅行プランの一覧情報を返す
+        - 旅行プランには行程とアクティビティがネスト構造で返却される
+      operationId: get_plan_list
+      parameters:
+        - name: "false"
+          in: header
+          type: string
+          format: mask
+          description: An optional fields mask
+      tags:
+        - plans
+    post:
+      responses:
+        '201':
+          description: Success
+          schema:
+            $ref: '#/definitions/PlanModel'
+      summary: Plan登録
+      description: |-
+        - name : プラン名（varchar255）
+        - traveler_id（いまTravelersテーブルがないので、任意のIDでOK）
+      operationId: post_plan_list
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/PlanModel'
+        - name: "false"
+          in: header
+          type: string
+          format: mask
+          description: An optional fields mask
+      tags:
+        - plans
+  '/plans/{plan_id}':
+    parameters:
+      - description: プランIDで検索
+        name: plan_id
+        in: path
+        required: true
+        type: integer
+    get:
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/PlanModel'
+      summary: Plan詳細取得
+      description: |-
+        - {int:plan_id}で指定された旅行プランの情報を返す
+        - 旅行プランには行程とアクティビティがネスト構造で返却される
+      operationId: get_plan_by_id
+      parameters:
+        - name: "false"
+          in: header
+          type: string
+          format: mask
+          description: An optional fields mask
+      tags:
+        - plans
+    delete:
+      responses:
+        '200':
+          description: Success
+      summary: Plan削除
+      description: |-
+        - {int:plan_id}で指定された旅行プランを削除する
+        - FK制約の影響は未確認
+      operationId: delete_plan_by_id
+      tags:
+        - plans
+    put:
+      responses:
+        '201':
+          description: Success
+          schema:
+            $ref: '#/definitions/PlanModel'
+      summary: Plan変更
+      description: |-
+        - {int:Plan_id}で指定された旅行プランを変更する
+        - tripsは削除⇒追加される
+        - Activitiesは削除⇒追加される
+      operationId: put_plan_by_id
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/PlanModel'
+        - name: "false"
+          in: header
+          type: string
+          format: mask
+          description: An optional fields mask
+      tags:
+        - plans
+  '/plans/{plan_id}/trips/':
+    parameters:
+      - description: プランIDで検索
+        name: plan_id
+        in: path
+        required: true
+        type: integer
+    get:
+      responses:
+        '200':
+          description: Success
+          schema:
+            properties:
+              trips:
+                type: array
+                items:
+                  $ref: '#/definitions/TripModel'
+      summary: plan/trip取得
+      description: '- {int:plan_id}で指定された行程（trips）を全量取得する'
+      operationId: get_trips_by_plan_id
+      parameters:
+        - name: "false"
+          in: header
+          type: string
+          format: mask
+          description: An optional fields mask
+      tags:
+        - plans
+    post:
+      responses:
+        '201':
+          description: Success
+          schema:
+            properties:
+              trips:
+                type: array
+                items:
+                  $ref: '#/definitions/PlanModel'
+      summary: Plan登録
+      description: '- {int:plan_id}でtripsを登録する'
+      operationId: post_trips_by_plan_id
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/PlanModel'
+        - name: "false"
+          in: header
+          type: string
+          format: mask
+          description: An optional fields mask
+      tags:
+        - plans
+  /transportation/:
+    get:
+      responses:
+        '200':
+          description: Success
+          schema:
+            properties:
+              transportation:
+                type: array
+                items:
+                  $ref: '#/definitions/TransportationModel'
+      summary: Transportation一覧取得
+      operationId: get_transportation_list
+      parameters:
+        - name: "false"
+          in: header
+          type: string
+          format: mask
+          description: An optional fields mask
+      tags:
+        - transportation
+    post:
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/TransportationModel'
+      summary: Transportation登録
+      description: |-
+        ## 入力値
+        - transportation : 交通手段（varchar255）
+        - image_url : 参考画像URL（varchar255）
+        ## 注意事項
+        idは登録時に自動採番されるため不要
+      operationId: post_transportation_list
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/TransportationModel'
+        - name: "false"
+          in: header
+          type: string
+          format: mask
+          description: An optional fields mask
+      tags:
+        - transportation
+  '/transportation/{id}':
+    parameters:
+      - description: id of transportation
+        name: id
+        in: path
+        required: true
+        type: integer
+    get:
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/TransportationModel'
+      summary: Transportation詳細
+      operationId: get_transportation_controller
+      parameters:
+        - name: "false"
+          in: header
+          type: string
+          format: mask
+          description: An optional fields mask
+      tags:
+        - transportation
+    delete:
+      responses:
+        '200':
+          description: Success
+      summary: Transportation削除
+      operationId: delete_transportation_controller
+      tags:
+        - transportation
+  /trips/:
+    get:
+      responses:
+        '200':
+          description: Success
+          schema:
+            properties:
+              trips:
+                type: array
+                items:
+                  $ref: '#/definitions/TripModel'
+      summary: Trip一覧取得
+      description: |-
+        - すべての行程の一覧情報を返す
+        - 行程情報には出発地、到着地、交通手段がネスト構造で返却される
+      operationId: get_trip_list
+      parameters:
+        - name: "false"
+          in: header
+          type: string
+          format: mask
+          description: An optional fields mask
+      tags:
+        - trips
+    post:
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/TripModel'
+      summary: Trip登録
+      description: |-
+        ## 入力値
+        - plan_id（FK）
+        - departure_location_id（FK）
+        - destination_location_id（FK）
+        - order : 旅行プランの中での並び順
+        - departure_date
+        - arrival_date
+        - transportation_id（FK）
+      operationId: post_trip_list
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/TripModel'
+        - name: "false"
+          in: header
+          type: string
+          format: mask
+          description: An optional fields mask
+      tags:
+        - trips
+  '/trips/{trip_id}':
+    parameters:
+      - description: id of trip
+        name: trip_id
+        in: path
+        required: true
+        type: integer
+    get:
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/TripModel'
+      summary: Trip詳細取得
+      description: |-
+        - {int:id}で指定された行程の情報を返す
+        - 行程情報には出発地、到着地、交通手段がネスト構造で返却される
+      operationId: get_trip_controller
+      parameters:
+        - name: "false"
+          in: header
+          type: string
+          format: mask
+          description: An optional fields mask
+      tags:
+        - trips
+    delete:
+      responses:
+        '200':
+          description: Success
+      summary: Trip削除
+      description: |-
+        - {int:id}で指定された行程を削除する
+        - FK制約の影響は未確認
+      operationId: delete_trip_controller
+      tags:
+        - trips
+info:
+  title: Matatabi API
+  version: '1.0'
+  description: Matatabi Trip Planning API
+produces:
+  - application/json
+consumes:
+  - application/json
+tags:
+  - name: plans
+    description: 一つの旅行全体のプランを表す
+  - name: trips
+    description: 旅行プランの中で行程を表す
+  - name: activities
+    description: 旅行プランの中でアクティビティを表す
+  - name: locations
+    description: Locationのエンドポイント
+  - name: transportation
+    description: Transportationのエンドポイント
+definitions:
+  PlanModel:
+    properties:
+      trips:
+        type: array
+        items:
+          $ref: '#/definitions/TripModel'
+    type: object
+  TripModel:
+    properties:
+      id:
+        type: integer
+        description: 行程のID
+        readOnly: true
+      plan_id:
+        type: integer
+        description: 旅行プランのID（FK）
+        readOnly: true
+        example: 1
+      departure_location:
+        $ref: '#/definitions/LocationModel'
+      destination_location:
+        $ref: '#/definitions/LocationModel'
+      order:
+        type: integer
+        description: 旅行プランの中での並び順
+        example: 10
+      departure_date:
+        type: string
+        format: date-time
+        description: 出発時刻
+        example: '2020-01-01T00:00:00'
+      arrival_date:
+        type: string
+        format: date-time
+        description: 到着時刻
+        example: '2099-12-31T23:59:59'
+      transportation:
+        $ref: '#/definitions/TransportationModel'
+    type: object
+  LocationModel:
+    properties:
+      id:
+        type: integer
+        description: 場所のID
+        readOnly: true
+      location:
+        type: string
+        description: 場所の名前
+        example: 大都会
+      address:
+        type: string
+        description: 場所の住所
+        example: 岡山市北区大供一丁目1番1号
+      image_url:
+        type: string
+        description: 参考画像のURL
+        example: 'https://www.city.okayama.jp/design_img/head_id.png'
+    type: object
+  TransportationModel:
+    properties:
+      id:
+        type: integer
+        description: 交通手段のID
+        readOnly: true
+      transportation:
+        type: string
+        description: 交通手段名
+        example: 新幹線なごみ
+      image_url:
+        type: string
+        description: 参考画像のURL
+        example: >-
+          https://upload.wikimedia.org/wikipedia/commons/5/5a/JRshikoku_tetsudo_hobby_train_kiha32_3.jpg
+    type: object
+  ActivityModel:
+    properties:
+      id:
+        type: integer
+        description: アクティビティのID
+        readOnly: true
+      plan_id:
+        type: integer
+        description: 旅行プランのID（FK）
+        readOnly: true
+        example: 1
+      activity:
+        type: string
+        description: アクティビティの名称
+        example: ねこと遊ぶ
+      image_url:
+        type: string
+        description: アクティビティの参考画像
+        example: 'https://pbs.twimg.com/media/Ecm58xSUwAEXDYq?format=jpg'
+      order:
+        type: integer
+        description: 旅行プランの中での並び順
+        example: 20
+    type: object
+responses:
+  ParseError:
+    description: When a mask can't be parsed
+  MaskError:
+    description: When any error occurs on mask
